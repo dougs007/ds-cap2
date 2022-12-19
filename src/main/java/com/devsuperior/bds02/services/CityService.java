@@ -45,7 +45,7 @@ public class CityService {
             repository.deleteById(id);
         } catch (EmptyResultDataAccessException e) {
             throw new NotFoundException(CITY_NOT_FOUND);
-        } catch (DataIntegrityViolationException d) {
+        } catch (DataIntegrityViolationException c) {
             throw new DatabaseException(DATA_INTEGRITY_VIOLATION_EXCEPTION);
         }
     }
