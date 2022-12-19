@@ -4,6 +4,7 @@ import com.devsuperior.bds02.dto.EventDTO;
 import com.devsuperior.bds02.entities.City;
 import com.devsuperior.bds02.entities.Event;
 import com.devsuperior.bds02.repositories.EventRepository;
+import com.devsuperior.bds02.services.exceptions.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,9 +30,8 @@ public class EventService {
 
             entity = repository.save(entity);
             return new EventDTO(entity);
-        }
-        catch (EntityNotFoundException e) {
-            throw new EntityNotFoundException("Id not found " + id);
+        } catch (EntityNotFoundException e) {
+            throw new NotFoundException("Id not found " + id);
         }
     }
 }
