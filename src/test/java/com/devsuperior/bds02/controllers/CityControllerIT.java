@@ -12,7 +12,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,66 +31,55 @@ public class CityControllerIT {
 
     @Test
     public void findAllShouldReturnAllResourcesSortedByName() throws Exception {
-
-        ResultActions result =
-                mockMvc.perform(get("/cities")
-                        .contentType(MediaType.APPLICATION_JSON));
-
-        result.andExpect(status().isOk());
-        result.andExpect(jsonPath("$[0].name").value("Belo Horizonte"));
-        result.andExpect(jsonPath("$[1].name").value("Belém"));
-        result.andExpect(jsonPath("$[2].name").value("Brasília"));
+        mockMvc.perform(get("/cities")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].name").value("Belo Horizonte"))
+                .andExpect(jsonPath("$[1].name").value("Belém"))
+                .andExpect(jsonPath("$[2].name").value("Brasília"))
+        ;
     }
 
     @Test
     public void insertShouldInsertResource() throws Exception {
-
         CityDTO dto = new CityDTO(null, "Recife");
         String jsonBody = objectMapper.writeValueAsString(dto);
 
-        ResultActions result =
-                mockMvc.perform(post("/cities")
-                        .content(jsonBody)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON));
-
-        result.andExpect(status().isCreated());
-        result.andExpect(jsonPath("$.id").exists());
-        result.andExpect(jsonPath("$.name").value("Recife"));
+        mockMvc.perform(post("/cities")
+                .content(jsonBody)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").exists())
+                .andExpect(jsonPath("$.name").value("Recife"))
+        ;
     }
 
     @Test
     public void deleteShouldReturnNoContentWhenIndependentId() throws Exception {
-
         Long independentId = 5L;
 
-        ResultActions result =
-                mockMvc.perform(delete("/cities/{id}", independentId));
-
-
-        result.andExpect(status().isNoContent());
+        mockMvc.perform(delete("/cities/{id}", independentId))
+                .andExpect(status().isNoContent())
+        ;
     }
 
     @Test
     public void deleteShouldReturnNotFoundWhenNonExistingId() throws Exception {
-
         Long nonExistingId = 50L;
 
-        ResultActions result =
-                mockMvc.perform(delete("/cities/{id}", nonExistingId));
-
-        result.andExpect(status().isNotFound());
+        mockMvc.perform(delete("/cities/{id}", nonExistingId))
+                .andExpect(status().isNotFound())
+        ;
     }
 
     @Test
     @Transactional(propagation = Propagation.NEVER)
     public void deleteShouldReturnBadRequestWhenDependentId() throws Exception {
-
         Long dependentId = 1L;
 
-        ResultActions result =
-                mockMvc.perform(delete("/cities/{id}", dependentId));
-
-        result.andExpect(status().isBadRequest());
+        mockMvc.perform(delete("/cities/{id}", dependentId))
+                .andExpect(status().isBadRequest())
+        ;
     }
 }
